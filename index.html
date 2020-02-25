@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hogwarts</title>
+    <link rel="stylesheet" href="css.css" />
+  </head>
+  <body>
+    <main>
+      <section class="controlls">
+        <img class="crest" src="images/hogwarts-crest.png" alt="" />
+      </section>
+      <section class="selectedStudent">
+        <div class="studentProfile">
+          <button data-btn="Inquisitor" class="Inquisitor">
+            Instill as Inquisitor
+          </button>
+          <button data-btn="Prefect" class="Prefect">Instill as Prefect</button>
+          <button data-btn="expelled" class="Expell">Expell</button>
+          <img class="profileImg" src="" />
+        </div>
+
+        <div class="studentAbout"></div>
+      </section>
+      <div class="studentListSection">
+        <div class="controllsContainer">
+          <select name="sort" id="">
+            <option value="" disabled selected>Sort by</option>
+            <option value="First name">First name</option>
+            <option value="Last name">Last name</option>
+            <option value="House name">House name</option>
+            <option value="Blood Satus">Blood Satus</option>
+          </select>
+
+          <select class="filter" name="filter" id="">
+            <option value="" disabled selected>Filter by</option>
+            <option data-filter="house" value="Gryffindor">Gryffindor</option>
+            <option data-filter="house" value="Hufflepuff">Hufflepuff</option>
+            <option data-filter="house" value="Slytherin">Slytherin</option>
+            <option data-filter="house" value="Ravenclaw">Ravenclaw</option>
+            <option data-filter="bloodStatus" value="Muggle-born"
+              >Muggle-born</option
+            >
+            <option data-filter="bloodStatus" value="Pure blood"
+              >Pure blood</option
+            >
+            <option data-filter="bloodStatus" value="Half blood"
+              >Half blood</option
+            >
+            <option data-filter="inquisitor" value="yes">Inquisitors</option>
+            <option data-filter="prefect" value="yes">Prefects</option>
+            <option data-filter="expelled" value="yes">Expelled</option>
+          </select>
+          <input type="text" placeholder="Search" />
+        </div>
+        <div class="listhere"></div>
+      </div>
+
+      <template class="studentlist-template">
+        <h3 data-active="" data-id="" class="studentdetails">
+          Student full name
+        </h3>
+      </template>
+
+      <template class="studentabout_template">
+        <div class="column1">
+          <h2 class="Bigname">Selected student name</h2>
+          <h2 class="house"></h2>
+          <h2 class="Gender">Boy/girl</h2>
+        </div>
+        <div class="column2">
+          <h2 class="expelled">Expelled</h2>
+          <h2 class="bloodStatus">Blood status</h2>
+          <h2 class="inquisitor"></h2>
+          <h2 class="prefect"></h2>
+        </div>
+      </template>
+      <script src="js.js"></script>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,204 @@
+@font-face {
+  font-family: "potterFont";
+  src: url("font/ParryHotter.ttf") format("truetype"); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}
+:root {
+  --Gryffindor_color: linear-gradient(
+    30deg,
+    rgba(127, 9, 9, 1) 0%,
+    rgba(255, 197, 0, 1) 100%
+  );
+  --Hufflepuff_color: linear-gradient(
+    30deg,
+    rgba(238, 225, 23, 1) 0%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  --Ravenclaw_color: linear-gradient(
+    30deg,
+    rgba(0, 10, 144, 1) 0%,
+    rgba(148, 107, 45, 1) 100%
+  );
+  --Slytherin_color: linear-gradient(
+    30deg,
+    rgba(13, 98, 23, 1) 0%,
+    rgba(170, 170, 170, 1) 100%
+  );
+}
+* {
+  overflow: hidden;
+}
+body {
+  /* background: var(--Gryffindor_color); */
+  font-family: "potterFont";
+  color: white;
+}
+main {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+  grid-template-columns: 1fr 3fr;
+  grid-template-rows: 1fr 1.5fr;
+}
+.controlls {
+  border: solid;
+  grid-row: span 2;
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  text-align: center;
+}
+.crest {
+  width: 90%;
+  height: auto;
+}
+
+.profileImg {
+  height: 90%;
+}
+.selectedStudent {
+  grid-row: 1;
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.studentProfile {
+  padding: 4vw;
+  position: relative;
+  border: solid;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  grid-column: 1;
+}
+.studentAbout {
+  height: auto;
+  border: solid;
+  text-align: right;
+  grid-column: 2;
+  padding: 2vw;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.column1 {
+  text-align: left;
+}
+.studentlistsection {
+  overflow: scroll;
+  padding: 2vw;
+  border: solid;
+  grid-column: 2;
+  grid-row: 2;
+}
+.listhere {
+  padding: 3vw;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  overflow: scroll;
+}
+h2 {
+  font-size: 2rem;
+}
+h3 {
+  font-size: 1.5rem;
+  padding: 0;
+  margin: 0;
+  font-weight: 100;
+  cursor: pointer;
+}
+main::after {
+  content: "";
+  background-image: url("images/HarryPotter.jpg");
+  background-size: cover;
+  opacity: 0.5;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+button {
+  display: none;
+}
+button,
+select,
+input {
+  background-color: #00b8d8;
+  /* background-color: var(--Gryffindor_color); */
+  transition-duration: 0.4s;
+  border: none;
+  width: 30%;
+  height: 10%;
+  border-radius: 0.5rem;
+}
+
+select:hover {
+  background-color: transparent; /* Green */
+  color: black;
+  border: solid;
+  border-radius: 0.5rem;
+}
+select,
+input {
+  height: 3vh;
+  width: 6vw;
+}
+input {
+  background-color: white;
+}
+.Inquisitor {
+  position: absolute;
+  left: 5%;
+  bottom: 45%;
+}
+.Prefect {
+  position: absolute;
+  left: 5%;
+  bottom: 30%;
+}
+.Expell {
+  position: absolute;
+  left: 5%;
+  bottom: 15%;
+  background-color: #ffb400;
+}
+.Expell:hover {
+  background-color: #c4183c;
+}
+button:hover {
+  background-color: transparent; /* Green */
+  color: black;
+  border: solid;
+  border-radius: 0.5rem;
+}
+
+.expelled {
+  color: red;
+  display: none;
+}
+[data-btnColour="Hufflepuff"] {
+  background: rgba(238, 225, 23);
+  font-weight: 500;
+  color: rgba(0, 0, 0);
+}
+[data-btnColour="Gryffindor"] {
+  background: rgb(127, 9, 9);
+  font-weight: 500;
+  color: rgba(255, 197, 0);
+}
+[data-btnColour="Ravenclaw"] {
+  background: rgba(0, 10, 144);
+  color: rgba(248, 207, 145);
+  font-weight: 500;
+}
+[data-btnColour="Slytherin"] {
+  background: rgba(13, 98, 23);
+  color: rgba(220, 220, 220);
+  font-weight: 500;
+}
