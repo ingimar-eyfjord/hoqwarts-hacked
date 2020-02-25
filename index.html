@@ -34,7 +34,7 @@
           </select>
 
           <select class="filter" name="filter" id="">
-            <option value="" disabled selected>Filter by</option>
+            <option value="*" disabled selected>Filter by</option>
             <option data-filter="house" value="Gryffindor">Gryffindor</option>
             <option data-filter="house" value="Hufflepuff">Hufflepuff</option>
             <option data-filter="house" value="Slytherin">Slytherin</option>
@@ -52,15 +52,17 @@
             <option data-filter="prefect" value="yes">Prefects</option>
             <option data-filter="expelled" value="yes">Expelled</option>
           </select>
-          <input type="text" placeholder="Search" />
+          <input type="text" class="search" placeholder="Search" />
         </div>
         <div class="listhere"></div>
       </div>
 
       <template class="studentlist-template">
-        <h3 data-active="" data-id="" class="studentdetails">
-          Student full name
-        </h3>
+        <div class="readthis">
+          <h3 data-active="" data-id="" class="studentdetails">
+            Student full name
+          </h3>
+        </div>
       </template>
 
       <template class="studentabout_template">

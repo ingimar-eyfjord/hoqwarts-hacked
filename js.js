@@ -86,21 +86,28 @@ function handleBloodData(data) {
 }
 deligator = function() {
   if (this.name == "filter") {
-    console.log(this.value);
     let filtering = this.value;
     if (this.value == "yes") {
       filtering = true;
     }
     const value = this.options[this.selectedIndex].getAttribute("data-filter");
-
     filteredList = [];
-    (function() {
-      filterthis = studentArray.filter(e => e[value] == filtering);
-      filteredList.push(filterthis);
-    })();
+    if (value == "expelled") {
+      (function() {
+        filterthis = studentArray.filter(e => e[value] == filtering);
+        filteredList.push(filterthis);
+      })();
+    } else {
+      (function() {
+        const studentArray2 = updateExpelledList();
+        filterthis = studentArray2.filter(e => e[value] == filtering);
+        filteredList.push(filterthis);
+      })();
+    }
     const isset = "filtering";
     const StudId = filteredList;
     appendFunc(isset, StudId);
+    return;
   } else {
     if (document.querySelector("[data-active='active']")) {
       document
@@ -111,16 +118,13 @@ deligator = function() {
     const isset = this.dataset.active;
     const StudId = this.dataset.id;
     appendFunc(isset, StudId);
+    return;
   }
 };
 
 function appendFunc(isset, StudId) {
-  document.querySelector(".Prefect").innerHTML = "Instill as Prefect";
-  document.querySelector(".Inquisitor").innerHTML = "Instill as Inquisitor";
-
   if (isset == "filtering") {
     const filtered = StudId;
-    console.log(filtered);
     document.querySelector(".listhere").innerHTML = "";
     filtered[0].forEach(e => {
       const template3 = document.querySelector(".studentlist-template").content;
@@ -135,6 +139,8 @@ function appendFunc(isset, StudId) {
     });
     clickonStud();
   } else if (isset == "active") {
+    document.querySelector(".Prefect").innerHTML = "Instill as Prefect";
+    document.querySelector(".Inquisitor").innerHTML = "Instill as Inquisitor";
     const btns = document.querySelectorAll("button");
     btns.forEach(e => {
       e.style.display = "block";
@@ -178,7 +184,6 @@ function appendFunc(isset, StudId) {
         document
           .querySelector(".profileImg")
           .setAttribute("src", e.imagefilename);
-
         if (e.inquisitor === true) {
           document.querySelector(".Inquisitor").innerHTML =
             "Revoke Inquisitor Status";
@@ -201,30 +206,51 @@ function appendFunc(isset, StudId) {
           document.querySelector(".Expell").style.display = "none";
         }
         document.querySelector(".studentAbout").appendChild(clone);
-
-        NoExpelledStuds = studentArray.filter(
-          studentArray => studentArray.expelled === false
-        );
-        console.log(NoExpelledStuds);
-        document.querySelector(".listhere").innerHTML = "";
-
-        NoExpelledStuds.forEach(e => {
-          const template = document.querySelector(".studentlist-template")
-            .content;
-          const clone = template.cloneNode(true);
-          const sname = clone.querySelector(".studentdetails");
-          const firstname = e.firstName;
-          const middleName = e.middleName;
-          const lastname = e.lastName;
-          sname.innerHTML =
-            firstname + `&nbsp` + middleName + `&nbsp` + lastname;
-          clone.querySelector(".studentdetails").setAttribute("data-id", e.id);
-          document.querySelector(".listhere").appendChild(clone);
-          clickonStud();
-          clickonFilter();
-        });
       }
     });
+    return;
+  } else if (isset == "updateStudinfo") {
+    studentArray.forEach(e => {
+      const StudID = StudId;
+      if (e.id == StudID) {
+        const template = document.querySelector(".studentabout_template")
+          .content;
+        const clone = template.cloneNode(true);
+        document.querySelector(".studentAbout").innerHTML = "";
+        const firstname = e.firstName;
+        const middleName = e.middleName;
+        const lastname = e.lastName;
+        const sname = clone.querySelector(".Bigname");
+        sname.innerHTML = firstname + `&nbsp` + middleName + `&nbsp` + lastname;
+        clone.querySelector(".Bigname").setAttribute("data-id", e.id);
+        clone.querySelector(".house").textContent = e.house;
+        clone.querySelector(".Gender").textContent = e.gender;
+        clone.querySelector(".bloodStatus").textContent = e.bloodStatus;
+        if (e.inquisitor === true) {
+          document.querySelector(".Inquisitor").innerHTML =
+            "Revoke Inquisitor Status";
+          clone.querySelector(".inquisitor").innerHTML = "Inquisitor";
+        }
+        if (e.prefect === true) {
+          document.querySelector(".Prefect").innerHTML =
+            "Revoke Prefect Status";
+          clone.querySelector(".prefect").innerHTML = "Prefect";
+        }
+        if (e.expelled === true) {
+          clone.querySelector(".expelled").style.display = "block";
+          clone.querySelector(".prefect").innerHTML = "";
+          clone.querySelector(".inquisitor").innerHTML = "";
+          clone.querySelector(".house").textContent = "";
+          clone.querySelector(".Gender").textContent = "";
+          clone.querySelector(".bloodStatus").textContent = "";
+          document.querySelector(".Prefect").style.display = "none";
+          document.querySelector(".Inquisitor").style.display = "none";
+          document.querySelector(".Expell").style.display = "none";
+        }
+        document.querySelector(".studentAbout").appendChild(clone);
+      }
+    });
+    return;
   } else {
     studentArray.forEach(e => {
       const template = document.querySelector(".studentlist-template").content;
@@ -253,10 +279,18 @@ function clickonStud() {
 function clickonFilter() {
   document.querySelector(".filter").addEventListener("change", (e = deligator));
 }
+function clickonFilter2() {
+  const filter = document.querySelector(".filter");
+  filter.addEventListener("click", (e = deligator));
+  filter.click();
+}
 
 const identifyStud = function() {
   const StudID = this.dataset.studid;
   const action = this.dataset.btn.toLowerCase();
+  if (action == "expelled") {
+    updateExpelledList();
+  }
   Takeaction(action, StudID);
 };
 
@@ -269,8 +303,9 @@ function Takeaction(action, StudID) {
         e[action] = false;
       }
     }
-    const isset = "active";
+    const isset = "updateStudinfo";
     appendFunc(isset, StudID);
+    updateExpelledList();
   });
 }
 
@@ -278,3 +313,47 @@ const buttons = document.querySelectorAll("button");
 buttons.forEach(e => {
   e.addEventListener("click", (e = identifyStud));
 });
+
+function updateExpelledList() {
+  document.querySelector(".listhere").innerHTML = "";
+  NoExpelledStuds = studentArray.filter(
+    studentArray => studentArray.expelled === false
+  );
+  apendlist(NoExpelledStuds);
+  clickonFilter2();
+  return NoExpelledStuds;
+}
+
+function apendlist(NoExpelledStuds) {
+  NoExpelledStuds.forEach(e => {
+    const template = document.querySelector(".studentlist-template").content;
+    const clone = template.cloneNode(true);
+    const sname = clone.querySelector(".studentdetails");
+    const firstname = e.firstName;
+    const middleName = e.middleName;
+    const lastname = e.lastName;
+    sname.innerHTML = firstname + `&nbsp` + middleName + `&nbsp` + lastname;
+    clone.querySelector(".studentdetails").setAttribute("data-id", e.id);
+    document.querySelector(".listhere").appendChild(clone);
+    clickonStud();
+    clickonFilter();
+  });
+}
+
+document.querySelector(".search").addEventListener("keyup", search);
+// I have been using this search functions since 2 semester. At first I had no Idea how it worked, but I do now.
+function search() {
+  let input, filter, li, a, i, txtValue;
+  input = document.querySelector(".search");
+  filter = input.value.toUpperCase();
+  li = document.getElementsByClassName("readthis");
+  for (i = 0; i < li.length; i++) {
+    a = li[i].getElementsByClassName("studentdetails")[0];
+    txtValue = a.textContent || a.innerText;
+    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+      li[i].style.display = "";
+    } else {
+      li[i].style.display = "none";
+    }
+  }
+}
