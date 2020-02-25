@@ -86,14 +86,16 @@ function handleBloodData(data) {
 }
 deligator = function() {
   if (this.name == "filter") {
-    let value = this.options[this.selectedIndex].getAttribute("data-filter");
-    if (this.options[this.selectedIndex].getAttribute("data-filter") == "yes") {
-      value = true;
+    console.log(this.value);
+    let filtering = this.value;
+    if (this.value == "yes") {
+      filtering = true;
     }
-    const filtering = this.value;
+    const value = this.options[this.selectedIndex].getAttribute("data-filter");
+
     filteredList = [];
     (function() {
-      filterthis = studentArray.filter(e => e[value] === filtering);
+      filterthis = studentArray.filter(e => e[value] == filtering);
       filteredList.push(filterthis);
     })();
     const isset = "filtering";
