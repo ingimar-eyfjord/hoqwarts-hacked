@@ -1,5 +1,5 @@
 // JavaScript Document
-window.addEventListener("DOMContentLoaded", getData);
+window.addEventListener("DOMContentLoaded", getData, clickonSort2, clickonSort);
 function getData() {
   fetch("https://petlatkea.dk/2020/hogwarts/students.json")
     .then(res => res.json())
@@ -84,6 +84,7 @@ function handleBloodData(data) {
     });
   });
 }
+
 deligator = function() {
   if (this.name == "filter") {
     let filtering = this.value;
@@ -111,8 +112,9 @@ deligator = function() {
     // Which will be used by the function in one of the IF statements, (if (isset == "filtering"))
     const StudId = filteredList;
     appendFunc(isset, StudId);
-
-    return;
+    sortfilterd = "sortfiltered";
+    sortFunction(StudId, sortfilterd);
+    return filteredList;
   } else {
     if (document.querySelector("[data-active='active']")) {
       document
@@ -130,14 +132,9 @@ deligator = function() {
 
 function appendFunc(isset, StudId) {
   if (isset == "filtering") {
-    document.querySelector(".studentAbout").innerHTML = "";
-
     const filtered = StudId;
-    document.querySelector(".profileImg").setAttribute("src", "");
     document.querySelector(".listhere").innerHTML = "";
-    document.querySelector(".Prefect").classList.add("displaynone");
-    document.querySelector(".Inquisitor").classList.add("displaynone");
-    document.querySelector(".Expell").classList.add("displaynone");
+
     filtered[0].forEach(e => {
       const template3 = document.querySelector(".studentlist-template").content;
       const clone3 = template3.cloneNode(true);
@@ -150,11 +147,11 @@ function appendFunc(isset, StudId) {
       document.querySelector(".listhere").appendChild(clone3);
     });
     clickonStud();
+    clickonData("General", studentArray);
     return;
   } else if (isset == "active") {
     document.querySelector(".Prefect").innerHTML = "Instill as Prefect";
     document.querySelector(".Inquisitor").innerHTML = "Instill as Inquisitor";
-
     const btns = document.querySelectorAll("button");
     btns.forEach(e => {
       e.style.display = "block";
@@ -220,6 +217,11 @@ function appendFunc(isset, StudId) {
           clone.querySelector(".house").textContent = "";
           clone.querySelector(".Gender").textContent = "";
           clone.querySelector(".bloodStatus").textContent = "";
+        }
+        if (e.expelled == true) {
+          document.querySelector(".Prefect").classList.add("displaynone");
+          document.querySelector(".Inquisitor").classList.add("displaynone");
+          document.querySelector(".Expell").classList.add("displaynone");
         }
         if (e.expelled == false) {
           document.querySelector(".Prefect").classList.remove("displaynone");
@@ -296,10 +298,12 @@ function appendFunc(isset, StudId) {
     });
     clickonStud();
     clickonFilter();
+    clickonSort();
+    clickonSort2();
     clickonData("General", studentArray);
   }
 }
-// Find me
+
 function clickonData(isset, array) {
   let huffC = 0;
   let slythC = 0;
@@ -307,7 +311,6 @@ function clickonData(isset, array) {
   let gryffC = 0;
   let activeC = 0;
   let expelledC = 0;
-  let displayedC = 0;
 
   if (isset == "General") {
     array.forEach(e => {
@@ -343,7 +346,9 @@ function clickonData(isset, array) {
   const expelled = document.querySelector(".numberOfStudExpelled");
   expelled.textContent = expelledC;
   const displayed = document.querySelector(".numberOfStudDisplayed");
-  displayed.textContent = displayedC;
+  const list = document.querySelectorAll(".studentdetails");
+
+  displayed.textContent = Array.from(list).length;
 }
 
 function clickonStud() {
@@ -362,22 +367,97 @@ function clickonFilter2() {
   filter.click();
 }
 
-// function clickonSort() {
-//   document.querySelector(".sort").addEventListener("change", (e = deligator));
-// }
-// function clickonSort2() {
-//   const filter = document.querySelector(".sort");
-//   filter.addEventListener("click", (e = deligator));
-//   filter.click();
-// }
+function clickonSort() {
+  document.querySelector(".sort").addEventListener("change", clickOnFilter);
+}
+function clickonSort2() {
+  const sort = document.querySelector(".sort");
+  sort.addEventListener("click", sortFunction);
+}
+function clickOnFilter() {
+  const filter = document.querySelector(".filter");
+  filter.click();
+}
+sorthisList = [];
+function sortFunction(list, sortfiltered) {
+  const sorter = document.querySelector(".sort");
+  if (sortfiltered == "sortfiltered") {
+    sorthisList = [];
+    sorthisList.push(list);
+
+    if (sorter.value == "First name") {
+      const sorted = sorthisList[0][0].sort(compare);
+      appendSorted(sorted);
+      console.log("hello");
+    } else if (sorter.value == "Last name") {
+      const sorted = sorthisList[0][0].sort(compare2);
+      appendSorted(sorted);
+    }
+  } else {
+    if (sorter.value == "First name") {
+      console.log("hello");
+      sortedArray = studentArray.sort(compare);
+
+      appendSorted(sortedArray);
+    } else if (sorter.value == "Last name") {
+      sortedArray = studentArray.sort(compare2);
+      appendSorted(sortedArray);
+    }
+  }
+}
+
+function appendSorted(sorted) {
+  document.querySelector(".listhere").innerHTML = "";
+  sorted.forEach(e => {
+    const template = document.querySelector(".studentlist-template").content;
+    const clone = template.cloneNode(true);
+    const sname = clone.querySelector(".studentdetails");
+    const firstname = e.firstName;
+    const middleName = e.middleName;
+    const lastname = e.lastName;
+    sname.innerHTML = firstname + `&nbsp` + middleName + `&nbsp` + lastname;
+    clone.querySelector(".studentdetails").setAttribute("data-id", e.id);
+    document.querySelector(".listhere").appendChild(clone);
+  });
+  clickonStud();
+  document.querySelector(".filter").click();
+  clickonData("General", studentArray);
+}
+// I had to make these two functions static for now. As is was struggling with the sorting function. I had way to many knots to tie and
+// to make the sorting wor, but it does work now.
+function compare(a, b) {
+  const sortBy = "firstName";
+  const ValueA = a[sortBy];
+  const ValueB = b[sortBy];
+  let comparison = 0;
+  if (ValueA > ValueB) {
+    comparison = 1;
+  } else if (ValueA < ValueB) {
+    comparison = -1;
+  }
+  return comparison;
+}
+function compare2(a, b) {
+  const sortBy = "lastName";
+  const ValueA = a[sortBy];
+  const ValueB = b[sortBy];
+  let comparison = 0;
+  if (ValueA > ValueB) {
+    comparison = 1;
+  } else if (ValueA < ValueB) {
+    comparison = -1;
+  }
+  return comparison;
+}
 
 const identifyStud = function() {
   const StudID = this.dataset.studid;
   const action = this.dataset.btn.toLowerCase();
+
+  Takeaction(action, StudID);
   if (action == "expelled") {
     updateExpelledList();
   }
-  Takeaction(action, StudID);
 };
 // Expell/Inquisitor/Prefect function
 function Takeaction(action, StudID) {
