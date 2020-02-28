@@ -91,6 +91,8 @@ deligator = function() {
       filtering = true;
     }
     const value = this.options[this.selectedIndex].getAttribute("data-filter");
+    // find me
+    // here is a filtered array
     filteredList = [];
     if (value == "expelled") {
       (function() {
@@ -105,8 +107,11 @@ deligator = function() {
       })();
     }
     const isset = "filtering";
+    // studID is a parameter in appendFunc that is actually based on a peramiter of another function, but here I am sending the Array into the function instead
+    // Which will be used by the function in one of the IF statements, (if (isset == "filtering"))
     const StudId = filteredList;
     appendFunc(isset, StudId);
+
     return;
   } else {
     if (document.querySelector("[data-active='active']")) {
@@ -116,6 +121,7 @@ deligator = function() {
     }
     this.setAttribute("data-active", "active");
     const isset = this.dataset.active;
+    // Here the student ID is actually the Student ID, and will be used as such, read previous comment for more info
     const StudId = this.dataset.id;
     appendFunc(isset, StudId);
     return;
@@ -124,8 +130,14 @@ deligator = function() {
 
 function appendFunc(isset, StudId) {
   if (isset == "filtering") {
+    document.querySelector(".studentAbout").innerHTML = "";
+
     const filtered = StudId;
+    document.querySelector(".profileImg").setAttribute("src", "");
     document.querySelector(".listhere").innerHTML = "";
+    document.querySelector(".Prefect").classList.add("displaynone");
+    document.querySelector(".Inquisitor").classList.add("displaynone");
+    document.querySelector(".Expell").classList.add("displaynone");
     filtered[0].forEach(e => {
       const template3 = document.querySelector(".studentlist-template").content;
       const clone3 = template3.cloneNode(true);
@@ -138,9 +150,11 @@ function appendFunc(isset, StudId) {
       document.querySelector(".listhere").appendChild(clone3);
     });
     clickonStud();
+    return;
   } else if (isset == "active") {
     document.querySelector(".Prefect").innerHTML = "Instill as Prefect";
     document.querySelector(".Inquisitor").innerHTML = "Instill as Inquisitor";
+
     const btns = document.querySelectorAll("button");
     btns.forEach(e => {
       e.style.display = "block";
@@ -172,12 +186,17 @@ function appendFunc(isset, StudId) {
           document
             .querySelector(".Inquisitor")
             .setAttribute("data-btnColour", e.house);
+
           document
             .querySelector(".Inquisitor")
             .setAttribute("data-StudID", e.id);
         } else {
           document.querySelector(".Inquisitor").style.display = "none";
         }
+        document
+          .querySelector(".filter")
+          .setAttribute("data-btnColour", e.house);
+        document.querySelector(".sort").setAttribute("data-btnColour", e.house);
         document
           .querySelector(".Prefect")
           .setAttribute("data-btnColour", e.house);
@@ -201,9 +220,11 @@ function appendFunc(isset, StudId) {
           clone.querySelector(".house").textContent = "";
           clone.querySelector(".Gender").textContent = "";
           clone.querySelector(".bloodStatus").textContent = "";
-          document.querySelector(".Prefect").style.display = "none";
-          document.querySelector(".Inquisitor").style.display = "none";
-          document.querySelector(".Expell").style.display = "none";
+        }
+        if (e.expelled == false) {
+          document.querySelector(".Prefect").classList.remove("displaynone");
+          document.querySelector(".Inquisitor").classList.remove("displaynone");
+          document.querySelector(".Expell").classList.remove("displaynone");
         }
         document.querySelector(".studentAbout").appendChild(clone);
       }
@@ -243,11 +264,21 @@ function appendFunc(isset, StudId) {
           clone.querySelector(".house").textContent = "";
           clone.querySelector(".Gender").textContent = "";
           clone.querySelector(".bloodStatus").textContent = "";
-          document.querySelector(".Prefect").style.display = "none";
-          document.querySelector(".Inquisitor").style.display = "none";
-          document.querySelector(".Expell").style.display = "none";
+          document.querySelector(".Prefect").classList.add("displaynone");
+          document.querySelector(".Inquisitor").classList.add("displaynone");
+          document.querySelector(".Expell").classList.add("displaynone");
+          document.querySelector("body").style.background = "";
+          document
+            .querySelector(".crest")
+            .setAttribute("src", "images/hogwarts-crest.png");
+        }
+        if (e.expelled == false) {
+          document.querySelector(".Prefect").classList.remove("displaynone");
+          document.querySelector(".Inquisitor").classList.remove("displaynone");
+          document.querySelector(".Expell").classList.remove("displaynone");
         }
         document.querySelector(".studentAbout").appendChild(clone);
+        clickonData("General", studentArray);
       }
     });
     return;
@@ -262,11 +293,57 @@ function appendFunc(isset, StudId) {
       sname.innerHTML = firstname + `&nbsp` + middleName + `&nbsp` + lastname;
       clone.querySelector(".studentdetails").setAttribute("data-id", e.id);
       document.querySelector(".listhere").appendChild(clone);
+    });
+    clickonStud();
+    clickonFilter();
+    clickonData("General", studentArray);
+  }
+}
+// Find me
+function clickonData(isset, array) {
+  let huffC = 0;
+  let slythC = 0;
+  let ravenC = 0;
+  let gryffC = 0;
+  let activeC = 0;
+  let expelledC = 0;
+  let displayedC = 0;
 
-      clickonStud();
-      clickonFilter();
+  if (isset == "General") {
+    array.forEach(e => {
+      if (e.house == "Hufflepuff") {
+        huffC++;
+      }
+      if (e.house == "Slytherin") {
+        slythC++;
+      }
+      if (e.house == "Ravenclaw") {
+        ravenC++;
+      }
+      if (e.house == "Gryffindor") {
+        gryffC++;
+      }
+      if (e.expelled) {
+        expelledC++;
+      } else {
+        activeC++;
+      }
     });
   }
+  const huff = document.querySelector(".Hufflepuff_stats");
+  huff.textContent = huffC;
+  const slyth = document.querySelector(".Slytherin_stats");
+  slyth.textContent = slythC;
+  const raven = document.querySelector(".Ravenclaw_stats");
+  raven.textContent = ravenC;
+  const gryff = document.querySelector(".Gryffindor_stats");
+  gryff.textContent = gryffC;
+  const active = document.querySelector(".numberOfStudActive");
+  active.textContent = activeC;
+  const expelled = document.querySelector(".numberOfStudExpelled");
+  expelled.textContent = expelledC;
+  const displayed = document.querySelector(".numberOfStudDisplayed");
+  displayed.textContent = displayedC;
 }
 
 function clickonStud() {
@@ -285,6 +362,15 @@ function clickonFilter2() {
   filter.click();
 }
 
+// function clickonSort() {
+//   document.querySelector(".sort").addEventListener("change", (e = deligator));
+// }
+// function clickonSort2() {
+//   const filter = document.querySelector(".sort");
+//   filter.addEventListener("click", (e = deligator));
+//   filter.click();
+// }
+
 const identifyStud = function() {
   const StudID = this.dataset.studid;
   const action = this.dataset.btn.toLowerCase();
@@ -293,7 +379,7 @@ const identifyStud = function() {
   }
   Takeaction(action, StudID);
 };
-
+// Expell/Inquisitor/Prefect function
 function Takeaction(action, StudID) {
   studentArray.forEach(e => {
     if (e.id == StudID) {
@@ -302,8 +388,12 @@ function Takeaction(action, StudID) {
       } else {
         e[action] = false;
       }
+      if (action == "expelled") {
+        e.house = "";
+      }
     }
     const isset = "updateStudinfo";
+    StudID = StudID;
     appendFunc(isset, StudID);
     updateExpelledList();
   });
@@ -338,6 +428,8 @@ function apendlist(NoExpelledStuds) {
     clickonStud();
     clickonFilter();
   });
+  // const isset = "General";
+  // clickonData(isset, NoExpelledStuds);
 }
 
 document.querySelector(".search").addEventListener("keyup", search);

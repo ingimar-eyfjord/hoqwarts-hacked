@@ -25,12 +25,10 @@
       </section>
       <div class="studentListSection">
         <div class="controllsContainer">
-          <select name="sort" id="">
-            <option value="" disabled selected>Sort by</option>
+          <select class="sort" name="sort" id="">
+            <option value="*" disabled selected>Sort by</option>
             <option value="First name">First name</option>
             <option value="Last name">Last name</option>
-            <option value="House name">House name</option>
-            <option value="Blood Satus">Blood Satus</option>
           </select>
 
           <select class="filter" name="filter" id="">
@@ -53,6 +51,36 @@
             <option data-filter="expelled" value="yes">Expelled</option>
           </select>
           <input type="text" class="search" placeholder="Search" />
+          <div class="stats">
+            <div>
+              Hufflepuff:
+              <div class="Hufflepuff_stats">Hufflepuff:</div>
+            </div>
+            <div>
+              Slytherin
+              <div class="Slytherin_stats">Slytherin:</div>
+            </div>
+            <div>
+              Ravenclaw
+              <div class="Ravenclaw_stats">Ravenclaw:</div>
+            </div>
+            <div>
+              Gryffindor
+              <div class="Gryffindor_stats">Gryffindor:</div>
+            </div>
+            <div>
+              Active Students:
+              <div class="numberOfStudActive">Active Students:</div>
+            </div>
+            <div>
+              Expelled Students:
+              <div class="numberOfStudExpelled">Expelled Students:</div>
+            </div>
+            <div>
+              Displayed Students:
+              <div class="numberOfStudDisplayed">Displayed Students:</div>
+            </div>
+          </div>
         </div>
         <div class="listhere"></div>
       </div>
