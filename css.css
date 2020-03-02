@@ -75,6 +75,25 @@ main {
   justify-content: flex-end;
   grid-column: 1;
 }
+.gif {
+  z-index: 20;
+  position: fixed;
+  top: 50vh;
+  right: 50vh;
+  transform: translate(-100%, -50%);
+  animation: virus 4s forwards;
+}
+@keyframes virus {
+  0% {
+    opacity: 1;
+  }
+  99% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 .studentAbout {
   height: auto;
   border: solid;

@@ -1,3 +1,4 @@
+"use strict";
 // JavaScript Document
 window.addEventListener("DOMContentLoaded", getData, clickonSort2, clickonSort);
 function getData() {
@@ -20,7 +21,7 @@ const Student = {
   prefect: false,
   expelled: false
 };
-studentArray = [];
+let studentArray = [];
 let number = 0;
 function handleData(myData) {
   myData.forEach(e => {
@@ -69,6 +70,26 @@ function checkBloodstatus() {
     .then(handleBloodData);
 }
 function handleBloodData(data) {
+  if (hackarray[0] == "hack") {
+    data.pure.forEach(e => {
+      studentArray.forEach(en => {
+        if (e == en.lastName || e == en.middleName) {
+          console.log(en.bloodStatus);
+          en.bloodStatus = "lala blood";
+        }
+      });
+    });
+    data.half.forEach(d => {
+      studentArray.forEach(en => {
+        if (d == en.lastName || d == en.middleName) {
+          en.bloodStatus = "Pure blood";
+        }
+      });
+    });
+
+    document.querySelector(".listhere").innerHTML = "";
+    console.log(studentArray);
+  }
   data.pure.forEach(e => {
     studentArray.forEach(en => {
       if (e == en.lastName || e == en.middleName) {
@@ -84,26 +105,28 @@ function handleBloodData(data) {
     });
   });
 }
-
-deligator = function() {
+// this is the deligator funtion, The function that is triggered by many different event listeners. It deligates 3 paramiters to the appendFunc.
+// One is to update student list, make a student visible (Modal function), and the last one is to filter the lsit.
+// I was trying to intergrate the sort functionality in with this but I could not figure out how, so it's a seporate function.
+let deligator = function() {
   if (this.name == "filter") {
     let filtering = this.value;
     if (this.value == "yes") {
       filtering = true;
     }
     const value = this.options[this.selectedIndex].getAttribute("data-filter");
-    // find me
+
     // here is a filtered array
-    filteredList = [];
+    let filteredList = [];
     if (value == "expelled") {
       (function() {
-        filterthis = studentArray.filter(e => e[value] == filtering);
+        let filterthis = studentArray.filter(e => e[value] == filtering);
         filteredList.push(filterthis);
       })();
     } else {
       (function() {
         const studentArray2 = updateExpelledList();
-        filterthis = studentArray2.filter(e => e[value] == filtering);
+        let filterthis = studentArray2.filter(e => e[value] == filtering);
         filteredList.push(filterthis);
       })();
     }
@@ -112,7 +135,7 @@ deligator = function() {
     // Which will be used by the function in one of the IF statements, (if (isset == "filtering"))
     const StudId = filteredList;
     appendFunc(isset, StudId);
-    sortfilterd = "sortfiltered";
+    let sortfilterd = "sortfiltered";
     sortFunction(StudId, sortfilterd);
     return filteredList;
   } else {
@@ -129,7 +152,6 @@ deligator = function() {
     return;
   }
 };
-
 function appendFunc(isset, StudId) {
   if (isset == "filtering") {
     const filtered = StudId;
@@ -296,6 +318,8 @@ function appendFunc(isset, StudId) {
       clone.querySelector(".studentdetails").setAttribute("data-id", e.id);
       document.querySelector(".listhere").appendChild(clone);
     });
+    if (isset == "timout") {
+    }
     clickonStud();
     clickonFilter();
     clickonSort();
@@ -303,7 +327,7 @@ function appendFunc(isset, StudId) {
     clickonData("General", studentArray);
   }
 }
-
+// These click on data are filled with event listener that are if clicked or changed will trigger deligator function
 function clickonData(isset, array) {
   let huffC = 0;
   let slythC = 0;
@@ -350,23 +374,20 @@ function clickonData(isset, array) {
 
   displayed.textContent = Array.from(list).length;
 }
-
 function clickonStud() {
   const clickName = document.querySelectorAll(".studentdetails");
   clickName.forEach(e => {
-    e.addEventListener("click", (e = deligator));
+    e.addEventListener("click", deligator);
   });
 }
-
 function clickonFilter() {
-  document.querySelector(".filter").addEventListener("change", (e = deligator));
+  document.querySelector(".filter").addEventListener("change", deligator);
 }
 function clickonFilter2() {
   const filter = document.querySelector(".filter");
-  filter.addEventListener("click", (e = deligator));
-  filter.click();
+  filter.addEventListener("click", deligator);
+  // filter.click();
 }
-
 function clickonSort() {
   document.querySelector(".sort").addEventListener("change", clickOnFilter);
 }
@@ -378,51 +399,7 @@ function clickOnFilter() {
   const filter = document.querySelector(".filter");
   filter.click();
 }
-sorthisList = [];
-function sortFunction(list, sortfiltered) {
-  const sorter = document.querySelector(".sort");
-  if (sortfiltered == "sortfiltered") {
-    sorthisList = [];
-    sorthisList.push(list);
 
-    if (sorter.value == "First name") {
-      const sorted = sorthisList[0][0].sort(compare);
-      appendSorted(sorted);
-      console.log("hello");
-    } else if (sorter.value == "Last name") {
-      const sorted = sorthisList[0][0].sort(compare2);
-      appendSorted(sorted);
-    }
-  } else {
-    if (sorter.value == "First name") {
-      console.log("hello");
-      sortedArray = studentArray.sort(compare);
-
-      appendSorted(sortedArray);
-    } else if (sorter.value == "Last name") {
-      sortedArray = studentArray.sort(compare2);
-      appendSorted(sortedArray);
-    }
-  }
-}
-
-function appendSorted(sorted) {
-  document.querySelector(".listhere").innerHTML = "";
-  sorted.forEach(e => {
-    const template = document.querySelector(".studentlist-template").content;
-    const clone = template.cloneNode(true);
-    const sname = clone.querySelector(".studentdetails");
-    const firstname = e.firstName;
-    const middleName = e.middleName;
-    const lastname = e.lastName;
-    sname.innerHTML = firstname + `&nbsp` + middleName + `&nbsp` + lastname;
-    clone.querySelector(".studentdetails").setAttribute("data-id", e.id);
-    document.querySelector(".listhere").appendChild(clone);
-  });
-  clickonStud();
-  document.querySelector(".filter").click();
-  clickonData("General", studentArray);
-}
 // I had to make these two functions static for now. As is was struggling with the sorting function. I had way to many knots to tie and
 // to make the sorting wor, but it does work now.
 function compare(a, b) {
@@ -449,7 +426,6 @@ function compare2(a, b) {
   }
   return comparison;
 }
-
 const identifyStud = function() {
   const StudID = this.dataset.studid;
   const action = this.dataset.btn.toLowerCase();
@@ -470,12 +446,12 @@ function Takeaction(action, StudID) {
       }
       if (action == "expelled") {
         e.house = "";
+        updateExpelledList();
       }
     }
     const isset = "updateStudinfo";
     StudID = StudID;
     appendFunc(isset, StudID);
-    updateExpelledList();
   });
 }
 
@@ -486,15 +462,44 @@ buttons.forEach(e => {
 
 function updateExpelledList() {
   document.querySelector(".listhere").innerHTML = "";
-  NoExpelledStuds = studentArray.filter(
+  let NoExpelledStuds = studentArray.filter(
     studentArray => studentArray.expelled === false
   );
   apendlist(NoExpelledStuds);
   clickonFilter2();
   return NoExpelledStuds;
 }
+let sorthisList = [];
+function sortFunction(list, sortfiltered) {
+  const sorter = document.querySelector(".sort");
+  if (sortfiltered == "sortfiltered") {
+    sorthisList = [];
+    sorthisList.push(list);
 
+    if (sorter.value == "First name") {
+      const sorted = sorthisList[0][0].sort(compare);
+      apendlist(sorted);
+      console.log("hello");
+    } else if (sorter.value == "Last name") {
+      const sorted = sorthisList[0][0].sort(compare2);
+      apendlist(sorted);
+    }
+  } else {
+    if (sorter.value == "First name") {
+      console.log("hello");
+      let sortedArray = studentArray.sort(compare);
+
+      apendlist(sortedArray);
+    } else if (sorter.value == "Last name") {
+      let sortedArray = studentArray.sort(compare2);
+      apendlist(sortedArray);
+    }
+  }
+}
+// This appendList is changing the big list, It will change it to take out the student's that are expelled and then also I use it
+// as a blackbox for the sort function as well.
 function apendlist(NoExpelledStuds) {
+  document.querySelector(".listhere").innerHTML = "";
   NoExpelledStuds.forEach(e => {
     const template = document.querySelector(".studentlist-template").content;
     const clone = template.cloneNode(true);
@@ -505,13 +510,12 @@ function apendlist(NoExpelledStuds) {
     sname.innerHTML = firstname + `&nbsp` + middleName + `&nbsp` + lastname;
     clone.querySelector(".studentdetails").setAttribute("data-id", e.id);
     document.querySelector(".listhere").appendChild(clone);
-    clickonStud();
-    clickonFilter();
   });
-  // const isset = "General";
-  // clickonData(isset, NoExpelledStuds);
+  clickonStud();
+  document.querySelector(".filter").click();
+  clickonData("General", studentArray);
+  clickonFilter();
 }
-
 document.querySelector(".search").addEventListener("keyup", search);
 // I have been using this search functions since 2 semester. At first I had no Idea how it worked, but I do now.
 function search() {
@@ -528,4 +532,51 @@ function search() {
       li[i].style.display = "none";
     }
   }
+}
+
+window.addEventListener("keypress", checkifHacking, false);
+
+function checkifHacking(e) {
+  var keyCode = e.keyCode;
+  if (keyCode == 72) {
+    hackTheSystem();
+  }
+}
+let hackarray = [];
+function hackTheSystem() {
+  const me = {
+    id: "100",
+    firstName: "Ingimar",
+    middleName: "Eyfjord",
+    lastName: "Smarason",
+    house: "Hufflepuff",
+    gender: "Man",
+    imagefilename: "images/profile/me.jpg",
+    bloodStatus: "Magical Unicorn",
+    inquisitor: true,
+    prefect: true,
+    expelled: false
+  };
+  studentArray.push(me);
+  console.log(studentArray);
+  document.querySelector(".listhere").innerHTML = "";
+  const expell = document.querySelector(".Expell");
+  expell.addEventListener("click", youCant);
+  expell.style.pointerEvents = "none";
+
+  document.querySelector(
+    "body"
+  ).innerHTML += `<img class="gif" src="images/tenor.gif" alt="Virus" width="250" />`;
+  function youCant() {
+    alert("You cant do that");
+    return;
+  }
+  setTimeout(() => {
+    const timeout = "timout";
+    appendFunc(timeout);
+  }, 2000);
+  const hack = "hack";
+  hackarray.push(hack);
+  console.log(hackarray);
+  checkBloodstatus();
 }
